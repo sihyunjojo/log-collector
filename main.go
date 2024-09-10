@@ -5,11 +5,18 @@ import (
     "log"
     "net/http"
     "os"
+    "github.com/joho/godotenv" // godotenv 패키지
 )
 
 var port string
 
 func main() {
+    // .env 파일 로드
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+
     // 포트 번호 환경 변수로 관리
     port = getPort()
 
@@ -21,11 +28,11 @@ func main() {
     log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
 }
 
-// 포트 번호를 환경 변수로부터 가져오거나 기본값(8080)을 설정
-func getPort() string {
+// getPort 함수: 환경 변수가 없으면 커스텀 에러 발생
+func getPort() (string, error) {
     port := os.Getenv("LOG_SERVER_PORT")
     if port == "" {
-        port = "8089" // 기본 포트 번호 설정
+        return "", customerrors.NewPortNotFoundError("LOG_SERVER_PORT")
     }
-    return port
+    return port, nil
 }
