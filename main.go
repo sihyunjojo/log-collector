@@ -26,8 +26,8 @@ func main() {
 		log.Fatal(err) // 에러가 발생하면 프로그램을 중단하고 로그 출력
 	}
 
-	// 경로 설정: /log/click/board 경로에 대한 핸들러 등록
-	http.HandleFunc("/log/click/board", handlers.HandleClickBoardLog) // 패키지 이름을 명시적으로 사용
+	// 경로 설정: /log/watch 경로에 대한 핸들러 등록
+	http.HandleFunc("/log/watch", handlers.HandleWatchLog) // 패키지 이름을 명시적으로 사용
 
 	// 서버 시작
 	fmt.Printf("Starting server on :%s...\n", port)
