@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"log/logwriter"
 	"net/http"
 	"os"
 
@@ -25,6 +26,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err) // 에러가 발생하면 프로그램을 중단하고 로그 출력
 	}
+
+	// 자정마다 로그 파일을 변경하는 작업을 백그라운드에서 실행
+	go logwriter.ScheduleLogRotation()
 
 	// 경로 설정: /log/watch 경로에 대한 핸들러 등록
 	http.HandleFunc("/log/watch", handlers.HandleWatchLog) // 패키지 이름을 명시적으로 사용
