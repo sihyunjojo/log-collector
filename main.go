@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 
+	// godotenv는 .env 파일에 정의된 키-값 쌍을 환경 변수로 설정하는 라이브러리입니다.
 	"github.com/joho/godotenv" // godotenv 패키지
 	"log/errors"               // 패키지 경로 수정
 	"log/handlers"             // 패키지 경로 수정
