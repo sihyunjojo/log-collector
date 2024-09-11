@@ -12,6 +12,15 @@ type WatchLogRequest struct {
 }
 
 // HandleWatchLog는 요청의 Body에서 keyword를 추출하고 로그로 저장하는 핸들러
+// @Summary Log a keyword from request body
+// @Description Extracts a keyword from the request body and logs it to a file
+// @Tags logs
+// @Accept  json
+// @Produce  json
+// @Param   keyword  body WatchLogRequest true "Keyword to log"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Router /log/keyword [post]
 func HandleWatchLog(c *fiber.Ctx) error {
 	// 요청 Body에서 JSON 데이터 추출
 	var req WatchLogRequest
@@ -29,7 +38,6 @@ func HandleWatchLog(c *fiber.Ctx) error {
 
 	// 성공적으로 처리되었음을 응답
 	return c.JSON(fiber.Map{
-		"message": "Keyword logged successfully",
 		"keyword": req.Keyword,
 	})
 }
