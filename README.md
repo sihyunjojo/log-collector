@@ -12,6 +12,7 @@ go mod tidy                 # 필요한 의존성을 자동으로 다운로드
 
 ## 실행
 ```bash
+swag init
 go run main.go
 ```
 

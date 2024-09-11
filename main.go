@@ -14,6 +14,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Log Collector API
+// @version 1.0
+// @description <h2>회원별 키워드 로깅을 위한 간단한 로그 수집 API입니다.</h2>
+
+// @contact.name 조시현
+// @contact.email si4018@naver.com
+
+// @schemes http https
+
 func main() {
 	// .env 파일 로드
 	err := godotenv.Load()
