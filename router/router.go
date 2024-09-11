@@ -26,5 +26,5 @@ func SetupRoutes(app *fiber.App) {
 	// 각 요청 마다 해당하는 handler 로 이동
 	app.Get("/", handler.HomeHandler)
 	app.Post("/log/watch", handler.HandleKeywordLog)
-	app.Post("/log/watch/{memberId}", handler.HandleKeywordLogByMember)
+	app.Post("/log/watch/:memberId", handler.HandleKeywordLogByMember)
 }
