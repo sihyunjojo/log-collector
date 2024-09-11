@@ -1,4 +1,4 @@
-package logwriter
+package writer
 
 import (
 	"log"  // 기본 로깅 기능을 제공하는 패키지
