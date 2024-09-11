@@ -1,4 +1,4 @@
-package logwriter
+package writer
 
 import (
 	"github.com/joho/godotenv" // .env 파일을 로드하는 라이브러리
