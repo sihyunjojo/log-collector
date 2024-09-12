@@ -20,9 +20,10 @@ pipeline {
             }
         }
 
-        stage('Check Docker') {
+        stage('Check') {
             steps {
                 sh 'docker ps'
+                sh 'ls /var/jenkins_home/workspace/log-server/docs'
             }
         }
 
@@ -44,8 +45,10 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+                    sh 'ls /var/jenkins_home/workspace/log-server/docs'
                     // 테스트 실행
-                    sh 'go test /var/jenkins_home/workspace/log-server/...'
+//                     sh 'go test /var/jenkins_home/workspace/log-server/...'
+                    sh 'go test ./...'
                 }
             }
         }
