@@ -35,7 +35,7 @@ COPY --from=builder /app/main /main
 COPY --from=builder /app/.env .
 
 # 11. 포트 설정
-EXPOSE 8080
+EXPOSE 8089
 
 # 12. 실행
 CMD ["/main"]
