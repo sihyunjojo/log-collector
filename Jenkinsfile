@@ -20,15 +20,6 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    // 테스트 실행
-                    sh 'go test /var/jenkins_home/workspace/log-server/...'
-                }
-            }
-        }
-
         stage('Check Docker') {
             steps {
                 sh 'docker ps'
@@ -46,6 +37,15 @@ pipeline {
                     // docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f docker/Dockerfile .
                         // docker/Dockerfile: docker/ 폴더 안에 있는 Dockerfile을 사용합니다.
                         // .: 빌드 컨텍스트는 현재 디렉터리 (.)로, 현재 디렉터리에 있는 모든 파일을 빌드 컨텍스트로 사용합니다.
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // 테스트 실행
+                    sh 'go test /var/jenkins_home/workspace/log-server/...'
                 }
             }
         }
