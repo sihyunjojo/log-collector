@@ -39,8 +39,6 @@ pipeline {
                 sh 'go test ./...'  // 테스트 실행
                 sh 'ls'
                 sh 'pwd'
-                sh 'ls /main'
-                sh 'ls -l /main'
                 sh 'chmod +x /main'
             }
         }
@@ -52,7 +50,7 @@ pipeline {
                     sh 'docker rm -f log-collector || true'
 
                     // Docker 컨테이너 실행
-                    sh 'docker run -d  -v /tmp/logs:/app/logs --name log-collector -p 8080:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    sh 'docker run -d  -v /tmp/logs:/app/logs --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
                 }
             }
         }
