@@ -10,6 +10,7 @@ WORKDIR /app
 # 3. 모듈 다운로드 (go.mod, go.sum을 먼저 복사하여 캐시 활용)
 COPY go.mod go.sum ./
 RUN go mod download
+RUN go mod tidy
 
 # 4. Swag 설치 (Swagger 문서 생성기)
 RUN go install github.com/swaggo/swag/cmd/swag@latest
