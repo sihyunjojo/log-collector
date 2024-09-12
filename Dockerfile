@@ -13,7 +13,7 @@ RUN go mod download
 RUN go mod tidy
 
 # 4. Swag 설치 (Swagger 문서 생성기)
-RUN go install github.com/swaggo/swag/cmd/swag@latest
+RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3
 
 # 5. 애플리케이션 소스 코드 복사
 COPY . .
