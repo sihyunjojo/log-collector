@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "log-collector-app"
         DOCKER_TAG = "latest"
+        PATH = "/usr/local/go/bin:${env.PATH}"
     }
 
     stages {
@@ -14,13 +15,6 @@ pipeline {
                     url: 'https://github.com/TEAM-Joyride/logCollector.git', // 리포지토리 URL
                     credentialsId: '404e752c-fb33-4398-969b-11253d1777d1' // (옵션) 인증이 필요한 경우 자격 증명 설정
                 )
-            }
-        }
-
-        stage('Check') {
-            steps {
-                sh 'docker ps'
-                sh 'ls /var/jenkins_home/workspace/log-server/docs'
             }
         }
 
@@ -41,12 +35,8 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                script {
-                    sh 'ls /var/jenkins_home/workspace/log-server/docs'
-                    // 테스트 실행
-//                     sh 'go test /var/jenkins_home/workspace/log-server/...'
-                    sh 'go test ./...'
-                }
+                sh 'go version'  // Go 설치 확인
+                sh 'go test ./...'  // 테스트 실행
             }
         }
 
