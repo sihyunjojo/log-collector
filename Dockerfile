@@ -31,9 +31,13 @@ FROM scratch
 # 9. 빌드된 실행 파일 복사
 COPY --from=builder /app/main /main
 
+CMD ["ls -al"]
+CMD ["ls /main"]
+
 # 10. .env 파일 복사 (필요한 경우)
 COPY --from=builder /app/.env .
 
+CMD ["ls /app"]
 # 11. 포트 설정
 EXPOSE 8089
 
