@@ -39,12 +39,6 @@ pipeline {
             }
         }
 
-        stage('Generate Swagger') {
-            steps {
-                sh 'swag init'
-            }
-        }
-
         stage('Run Tests') {
             steps {
                 script {
