@@ -26,7 +26,9 @@ RUN swag init
 RUN go build -o main .
 
 # 8. 실행 단계 (더 경량화된 scratch 이미지 사용)
-FROM scratch
+#FROM scratch
+# 8. 실행 단계 (alpine 이미지 사용하여 디버깅 가능)
+FROM alpine
 
 # 9. 빌드된 실행 파일 복사
 COPY --from=builder /app/main /main
@@ -34,6 +36,8 @@ COPY --from=builder /app/main /main
 # 10. .env 파일 복사 (필요한 경우)
 COPY --from=builder /app/.env .
 
+# 11. 디버깅을 위한 기본 유틸리티 설치
+RUN apk add --no-cache bash
 RUN ls -al /app
 RUN ls /main
 
