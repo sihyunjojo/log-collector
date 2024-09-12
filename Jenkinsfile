@@ -37,9 +37,6 @@ pipeline {
             steps {
                 sh 'go version'  // Go 설치 확인
                 sh 'go test ./...'  // 테스트 실행
-                sh 'ls'
-                sh 'pwd'
-                sh 'chmod +x /main'
             }
         }
 
