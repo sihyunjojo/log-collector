@@ -4,6 +4,9 @@ pipeline {
     environment {
         DOCKER_IMAGE = "log-collector-app"
         DOCKER_TAG = "latest"
+        // 기존에 설정된 PATH 환경 변수의 값에 /usr/local/go/bin 경로를 추가하는 것입니다. 이를 통해 Jenkins가 실행 중일 때 go 명령을 사용할 수 있게 만듭니다.
+        // ${env.PATH}는 기존의 PATH 설정을 그대로 유지하여 시스템의 다른 경로도 정상적으로 작동하도록 보장합니다.
+        PATH = "/usr/local/go/bin:${env.PATH}"
     }
 
     stages {
