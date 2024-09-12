@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     // 테스트 실행
-                    sh 'go test ./...'
+                    sh 'go test /var/jenkins_home/workspace/log-server/...'
                 }
             }
         }
