@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -23,13 +22,4 @@ func GetNextMidnightInSeoul() time.Time {
 	now := GetSeoulTime()
 	next := now.Add(time.Hour * 24)
 	return time.Date(next.Year(), next.Month(), next.Day(), 0, 0, 0, 0, now.Location())
-}
-
-func init() {
-	var err error
-	SeoulLocation, err = time.LoadLocation("Asia/Seoul")
-	if err != nil {
-		fmt.Printf("서울 시간대를 로드하는데 실패했습니다: %v\n", err)
-		SeoulLocation = time.FixedZone("KST", 9*60*60) // 실패 시 KST로 대체
-	}
 }
