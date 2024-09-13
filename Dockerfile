@@ -25,20 +25,40 @@ RUN swag init
 # 현재 작업 디렉터리 (/app) 내에서 Go 애플리케이션을 빌드하고, 빌드된 실행 파일을 main이라는 이름으로 생성합니다.
 RUN go build -o main .
 
-# 8. 실행 단계 (더 경량화된 scratch 이미지 사용)
-FROM scratch
+## 8. 실행 단계 (더 경량화된 scratch 이미지 사용)
+#FROM scratch
+#
+## 9. 빌드된 실행 파일 복사
+#COPY --from=builder /app/main ./main
+#
+## 10. .env 파일 복사 (필요한 경우)
+#COPY --from=builder /app/.env .
+#
+#RUN ls -l ./main
+#
+## 11. 포트 설정
+#EXPOSE 8089
+#
+## 12. 실행
+#CMD ["./main"]
 
-# 9. 빌드된 실행 파일 복사
-COPY --from=builder /app/main ./main
+# 8. 실행 단계 (alpine 이미지 사용)
+FROM alpine
 
-# 10. .env 파일 복사 (필요한 경우)
-COPY --from=builder /app/.env .
+# 빌드된 실행 파일 복사
+COPY --from=builder /app/main /main
+
+# .env 파일 복사 (필요한 경우)
+COPY --from=builder /app/.env ./
+
+RUN ls -l /main # 파일이 존재하는지 확인
 
 # 11. 포트 설정
 EXPOSE 8089
 
 # 12. 실행
-CMD ["./main"]
+CMD ["/main"]
+
 
 ## 1. Build 단계
 #FROM golang:1.23-alpine AS builder
