@@ -40,31 +40,31 @@ EXPOSE 8089
 # 12. 실행
 CMD ["/main"]
 
-# 1. Build 단계
-FROM golang:1.23-alpine AS builder
-
-# 필요한 패키지 설치
-RUN apk add --no-cache build-base git
-
-# 2. 작업 디렉터리 설정
-WORKDIR /app
-
-# 3. 모듈 다운로드
-COPY go.mod go.sum ./
-RUN go mod download
-RUN go mod tidy
-
-# 4. Swag 설치
-RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3
-
-# 5. 애플리케이션 소스 코드 복사
-COPY . .
-
-# 6. Swag init 실행
-RUN swag init
-
-# 7. 포트 설정
-EXPOSE 8089
-
-# 8. 실행
-CMD ["./main.exe"]
+## 1. Build 단계
+#FROM golang:1.23-alpine AS builder
+#
+## 필요한 패키지 설치
+#RUN apk add --no-cache build-base git
+#
+## 2. 작업 디렉터리 설정
+#WORKDIR /app
+#
+## 3. 모듈 다운로드
+#COPY go.mod go.sum ./
+#RUN go mod download
+#RUN go mod tidy
+#
+## 4. Swag 설치
+#RUN go install github.com/swaggo/swag/cmd/swag@v1.16.3
+#
+## 5. 애플리케이션 소스 코드 복사
+#COPY . .
+#
+## 6. Swag init 실행
+#RUN swag init
+#
+## 7. 포트 설정
+#EXPOSE 8089
+#
+## 8. 실행
+#CMD ["./main.exe"]
