@@ -12,6 +12,7 @@ RUN apk add --no-cache build-base git
 
 # 변경된 시간대 확인
 RUN date
+
 # 2. 작업 디렉터리 설정
 WORKDIR /app
 
@@ -36,6 +37,12 @@ RUN go build -o main .
 # 8. 실행 단계 (alpine 이미지 사용)
 FROM alpine
 #FROM scratch # 운영체제도, 쉘 명령어도, 유틸리티도 포함되지 않은 매우 경량화된 이미지입니다.
+
+# tzdata 설치 (최종 실행 이미지에서도 필요)
+RUN apk add --no-cache tzdata
+
+# Asia/Seoul 시간대 설정
+RUN cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
 
 # 빌드된 실행 파일 복사
 COPY --from=builder /app/main /main
