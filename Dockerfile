@@ -29,7 +29,7 @@ RUN go build -o main.exe .
 FROM scratch
 
 # 9. 빌드된 실행 파일 복사
-COPY --from=builder /app/main.exe /main.exe
+COPY --from=builder /app/main.exe ./main.exe
 
 # 10. .env 파일 복사 (필요한 경우)
 COPY --from=builder /app/.env .
@@ -38,7 +38,7 @@ COPY --from=builder /app/.env .
 EXPOSE 8089
 
 # 12. 실행
-CMD ["./main.exe"]
+CMD ["./maine.xe"]
 
 ## 1. Build 단계
 #FROM golang:1.23-alpine AS builder
