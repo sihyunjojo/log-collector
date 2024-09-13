@@ -55,7 +55,7 @@ func GetLogger() logger.Config {
 	return logger.Config{
 		Format:     "[${time}] ${status} - ${method} ${path} ${latency} - ${ip}\n",
 		Output:     userLogger,
-		TimeFormat: "2006-01-02",
+		TimeFormat: "2006-01-02 15:04:05",
 		TimeZone:   seoulLocation.String(),
 	}
 }
