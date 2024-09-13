@@ -10,6 +10,8 @@ RUN cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc
 # 필요한 패키지 설치
 RUN apk add --no-cache build-base git
 
+# 변경된 시간대 확인
+RUN date
 # 2. 작업 디렉터리 설정
 WORKDIR /app
 
