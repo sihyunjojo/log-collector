@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"io"
 	"log"
 
@@ -14,10 +13,6 @@ type KeywordLogRequest struct {
 }
 
 var logger io.Writer
-
-func init() {
-	logger = config.SetupLogger("keyword", "keyword")
-}
 
 // @Param <name> <location> <type> <required> <description>
 
@@ -81,10 +76,7 @@ func HandleKeywordLogByMember(c *fiber.Ctx) error {
 	log.SetOutput(userLogger)
 	log.Printf("[%s] MemberId: %s, Received keyword: %s\n", config.GetSeoulTime(), memberId, req.Keyword)
 
-	_, err := fmt.Fprintf(logger, "[%s] MemberId: %s, Received keyword: %s\n", config.GetSeoulTime(), memberId, req.Keyword)
-	if err != nil {
-		return err
-	}
+	//fmt.Fprintf(logger, "[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword)
 
 	// 성공적으로 처리되었음을 응답
 	return c.JSON(fiber.Map{
