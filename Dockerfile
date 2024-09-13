@@ -39,6 +39,7 @@ FROM alpine
 #FROM scratch # 운영체제도, 쉘 명령어도, 유틸리티도 포함되지 않은 매우 경량화된 이미지입니다.
 
 # tzdata 설치 (최종 실행 이미지에서도 필요)
+############# 이걸 2번해줘야되드라?
 RUN apk add --no-cache tzdata
 
 # Asia/Seoul 시간대 설정
