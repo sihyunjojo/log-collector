@@ -49,7 +49,8 @@ pipeline {
 
 //                     sh 'docker run --rm log-collector-app:latest /main'
                     // Docker 컨테이너 실행
-                    sh 'docker run -d  -v /tmp/logs/log-collector:/logs --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+//                     sh 'docker run -d  -v /tmp/logs/log-collector:/logs --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                    sh 'docker run -d -v /tmp/logs/log-collector:/logs -e TZ=Asia/Seoul --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
 //                       sh 'docker run -d --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
 
                 }
