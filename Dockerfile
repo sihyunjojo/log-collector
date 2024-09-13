@@ -1,6 +1,12 @@
 # 1. Build 단계
 FROM golang:1.23-alpine AS builder
 
+# 시간대 설정을 위한 패키지 설치
+RUN apk add --no-cache tzdata
+
+# Asia/Seoul 시간대로 설정
+RUN cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && echo "Asia/Seoul" > /etc/timezone
+
 # 필요한 패키지 설치
 RUN apk add --no-cache build-base git
 
