@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+	"io"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,6 +11,12 @@ import (
 
 type KeywordLogRequest struct {
 	Keyword string `json:"keyword"`
+}
+
+var logger io.Writer
+
+func init() {
+	logger = config.SetupLogger("keyword", "keyword")
 }
 
 // @Param <name> <location> <type> <required> <description>
@@ -33,9 +41,11 @@ func HandleKeywordLog(c *fiber.Ctx) error {
 	}
 
 	// 로그 파일에 keyword 저장
-	userLogger := config.SetupLogger("keyword", "keyword") // 로그 파일을 생성하고 설정
-	log.SetOutput(userLogger)                              // 기본 log 패키지에서 로그 출력 대상을 변경
-	log.Printf("Received keyword: %s", req.Keyword)        //  로그 메시지를 생성하고 기록
+	userLogger := config.SetupLogger("keyword", "keyword")                        // 로그 파일을 생성하고 설정
+	log.SetOutput(userLogger)                                                     // 기본 log 패키지에서 로그 출력 대상을 변경
+	log.Printf("[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword) //  로그 메시지를 생성하고 기록
+
+	//fmt.Fprintf(logger, "[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword)
 
 	// 성공적으로 처리되었음을 응답
 	return c.JSON(fiber.Map{
@@ -69,7 +79,12 @@ func HandleKeywordLogByMember(c *fiber.Ctx) error {
 	// 로그 파일에 keyword 저장
 	userLogger := config.SetupLogger("keywordByMember", "keywordByMember")
 	log.SetOutput(userLogger)
-	log.Printf("MembmerId: %s, Received keyword: %s", memberId, req.Keyword)
+	log.Printf("[%s] MemberId: %s, Received keyword: %s\n", config.GetSeoulTime(), memberId, req.Keyword)
+
+	_, err := fmt.Fprintf(logger, "[%s] MemberId: %s, Received keyword: %s\n", config.GetSeoulTime(), memberId, req.Keyword)
+	if err != nil {
+		return err
+	}
 
 	// 성공적으로 처리되었음을 응답
 	return c.JSON(fiber.Map{
