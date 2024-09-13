@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"os"
 	"strconv"
+	"time"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -49,10 +50,12 @@ func SetupLogger(folderName string, fileName string) *lumberjack.Logger {
 // GetLogger는 writer에서 설정한 로그 작성자 (Fiber의 로거)를 반환함
 func GetLogger() logger.Config {
 	userLogger := SetupLogger("status", "status")
+	seoulLocation, _ := time.LoadLocation("Asia/Seoul")
 
 	return logger.Config{
 		Format:     "[${time}] ${status} - ${method} ${path} ${latency} - ${ip}\n",
 		Output:     userLogger,
 		TimeFormat: "2006-01-02",
+		TimeZone:   seoulLocation.String(),
 	}
 }
