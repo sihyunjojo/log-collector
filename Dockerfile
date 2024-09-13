@@ -43,7 +43,7 @@ RUN go build -o main .
 #CMD ["./main"]
 
 # 8. 실행 단계 (alpine 이미지 사용)
-FROM alpine
+FROM scratch
 
 # 빌드된 실행 파일 복사
 COPY --from=builder /app/main /main
