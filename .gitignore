@@ -268,3 +268,6 @@ modules.xml
 *.ipr
 
 # End of https://www.toptal.com/developers/gitignore/api/git,go,goland+iml,goland,goland+all
+
+# swag file
+docs/docs.go
