@@ -40,8 +40,10 @@ FROM alpine
 
 # Filebeat의 autodiscover 기능을 위한 레이블 추가
 # 이 레이블들은 Filebeat가 이 컨테이너의 로그를 자동으로 수집하도록 지시합니다.
-LABEL co.elastic.logs/enabled="true"  # 이 컨테이너의 로그 수집을 활성화합니다.
-LABEL co.elastic.logs/module="golang" # Filebeat의 Golang 모듈을 사용하여 로그를 파싱합니다.
+ # 이 컨테이너의 로그 수집을 활성화합니다.
+LABEL co.elastic.logs/enabled="true"
+# Filebeat의 Golang 모듈을 사용하여 로그를 파싱합니다.
+LABEL co.elastic.logs/module="golang"
 
 # ... (이하 내용 동일)
 # tzdata 설치 (최종 실행 이미지에서도 필요)
