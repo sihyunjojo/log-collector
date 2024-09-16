@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
 	"path/filepath"
@@ -8,7 +9,7 @@ import (
 )
 
 // RotateLogger는 자정마다 새 로그 파일로 롤링하는 작업을 수행
-func RotateLogger(logger *lumberjack.Logger, folderName string) {
+func RotateLogger(logger *lumberjack.Logger, folderName string, fileName string) {
 	go func() {
 		for {
 			// 현재 시간과 자정 시간 설정
@@ -22,14 +23,15 @@ func RotateLogger(logger *lumberjack.Logger, folderName string) {
 			if folderName != "" {
 				baseDirectory = filepath.Join(baseDirectory, folderName)
 			}
-			newLogFile := filepath.Join(baseDirectory, "app-"+GetSeoulTime().Format("2006-01-02")+".log")
+			newLogFile := filepath.Join(baseDirectory, fmt.Sprintf("%s-%s.log", fileName, GetSeoulTime().Format("2006-01-02")))
+
+			logger.Filename = newLogFile
 
 			// 롤링 수행
 			err := logger.Rotate()
 			if err != nil {
 				return
 			}
-			logger.Filename = newLogFile
 		}
 	}()
 }
