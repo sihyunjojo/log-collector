@@ -25,6 +25,7 @@ pipeline {
                     // ${DOCKER_IMAGE}:${DOCKER_TAG}: 빌드된 Docker 이미지의 이름과 태그를 지정합니다. 예를 들어, log-collector-app:latest 같은 형식입니다.
                     // .: 현재 디렉터리에서 Dockerfile을 찾고, 그 디렉터리의 모든 파일을 빌드 컨텍스트로 사용한다는 의미입니다.
                     sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                    // docker build -t log-collector-app:latest .
 
                     // docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f docker/Dockerfile .
                         // docker/Dockerfile: docker/ 폴더 안에 있는 Dockerfile을 사용합니다.
@@ -51,7 +52,7 @@ pipeline {
                     // Docker 컨테이너 실행
 //                     sh 'docker run -d  -v /tmp/logs/log-collector:/logs --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
                     sh 'docker run -d -v /tmp/logs/log-collector:/logs -e TZ=Asia/Seoul --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
-//                       sh 'docker run -d --name log-collector -p 8089:8089 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+// docker run -d -v /tmp/logs/log-collector:/logs -e TZ=Asia/Seoul --name log-collector -p 8089:8089 log-collector-app:latest
 
                 }
             }
