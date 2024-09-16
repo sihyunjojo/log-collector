@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"log-collector/config"
 	_ "log-collector/docs"
 	"log-collector/router"
 
@@ -35,11 +34,6 @@ func runApplication() error {
 	if err := godotenv.Load(); err != nil {
 		return fmt.Errorf(".env 파일을 로드하는데 실패했습니다: %w", err)
 	}
-
-	// 로그 설정
-	logger := config.SetupLogger("logs", "logs")
-	config.RotateLogger(logger, "logs")
-	log.SetOutput(logger)
 
 	// Fiber 인스턴스 생성
 	app := fiber.New()
