@@ -1,24 +1,40 @@
 filebeat.inputs:
   - type: filestream
-    id: keywordByMember-logs-filestream
+    id: keywordByMember-logs
+    enabled: true  # 이 입력을 활성화
     paths:
       - /usr/share/filebeat/logs/keywordByMember/*.log
+    parsers:
+      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
+          target: ""  # JSON 필드를 최상위에 배치
+          add_error_key: true  # 오류 발생 시 error 필드를 추가
     fields:
       log_type: keywordByMember  # 로그 타입 필드 추가
     fields_under_root: true  # 추가된 필드를 최상위에 배치
 
   - type: filestream
-    id: keyword-logs-filestream
+    id: keyword-logs
+    enabled: true  # 이 입력을 활성화
     paths:
       - /usr/share/filebeat/logs/keyword/*.log
+    parsers:
+      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
+          target: ""  # JSON 필드를 최상위에 배치
+          add_error_key: true  # 오류 발생 시 error 필드를 추가
     fields:
       log_type: keyword  # 로그 타입 필드 추가
     fields_under_root: true
 
   - type: filestream
-    id: status-logs-filestream
+    id: status-logs
+    enabled: true  # 이 입력을 활성화
+
     paths:
       - /usr/share/filebeat/logs/status/*.log
+    parsers:
+      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
+          target: ""  # JSON 필드를 최상위에 배치
+          add_error_key: true  # 오류 발생 시 error 필드를 추가
     fields:
       log_type: status  # 로그 타입 필드 추가
     fields_under_root: true
@@ -37,8 +53,27 @@ filebeat.autodiscover:
 #     labels:
 #      co.elastic.logs/enabled: "true"  # 이 컨테이너의 로그 수집 활성화
 #      co.elastic.logs/module: "java"  # Java 모듈을 사용해 로그 처리 (nginx, redis) 등 여러 방식
-# 와 같은 것을 도커 컴포즈에는 위 같이, 타 방식은 다른 방식으로 설정해 주면 자동으로 가져옴
+# 와 같은 것을 도커 컴포즈에는 위 같이, 타 방식은 다른 방식으로 설정해 주면 자동으로
+
+
+# 로그 메시지가 분석되어 각 필드에 저장되므로 Elasticsearch에서 데이터를 더 세밀하게 분석할 수 있게 됩니다.
+# 예를 들어: timestamp나 keyword 필드에 대한 쿼리를 Elasticsearch에서 쉽게 수행할 수 있게 됩니다.
 processors:
+  - timestamp: # 타임스탬프 필드를 처리하는 프로세서
+      field: event.created  # 'event.created' 필드를 타임스탬프 필드로 사용
+      layouts: # 타임스탬프 형식을 지정
+        - '2006/01/02 15:04:05'  # 타임스탬프 형식을 지정 (Go 타임 형식)
+      test: # 테스트용 데이터 지정 (타임스탬프 형식이 맞는지 확인)
+        - '2024/09/17 20:33:46'  # 테스트할 타임스탬프 값
+
+# %{timestamp}: 로그의 타임스탬프가 이 위치에 들어가며, 기본 필드로 추출됩니다.
+# %{@timestamp}: 타임스탬프 데이터가 중첩되어 로그로 들어오면 여기서 추출됩니다.
+# %{keyword}: Received keyword: 뒤에 나오는 데이터가 keyword 필드로 추출됩니다.
+  - dissect:  # 메시지를 구문 분석하는 프로세서
+      tokenizer: '%{timestamp} [%{@timestamp}] Received keyword: %{keyword}'  # 메시지를 구문 분석하기 위한 토큰 형식
+      field: 'message'  # 'message' 필드에서 데이터를 추출
+      target_prefix: ''  # 추출된 필드를 최상위에 배치 (별도 접두사 없이)
+
   - add_docker_metadata: ~  # Docker 관련 메타데이터를 수집 이벤트에 자동으로 추가합니다.
   - add_host_metadata: ~  # 호스트 시스템에 대한 메타데이터를 추가합니다.
 
