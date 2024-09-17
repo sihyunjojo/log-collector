@@ -131,7 +131,7 @@ services:  # 서비스 정의
       co.elastic.logs/module: kibana  # 로그 모듈 설정 (Elastic 모니터링을 위해)
     volumes:  # 볼륨 마운트
       - certs:/usr/share/kibana/config/certs  # 인증서 볼륨 마운트
-      - kibanadata:/usr/share/kibana/data  # 데이터 볼륨 마운트
+      - kibanadata01:/usr/share/kibana/data  # 데이터 볼륨 마운트
     ports:
       - ${KIBANA_PORT}:5601  # 호스트와의 포트 매핑
     environment:  # 환경 변수 설정
