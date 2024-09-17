@@ -12,7 +12,7 @@ volumes:  # 서비스들이 사용하는 데이터 저장소 설정
 
 networks:  # 네트워크 설정
   default:  # 기본 네트워크 설정
-    name: elastic  # 네트워크 이름 설정
+    name: elastic-network  # 네트워크 이름 설정
     external: false  # 외부 네트워크를 사용하지 않음  # 네트워크가 없으면 생성
 
 services:  # 서비스 정의
@@ -70,6 +70,8 @@ services:  # 서비스 정의
       interval: 1s  # 헬스체크 간격 1초
       timeout: 5s  # 헬스체크 타임아웃 5초
       retries: 120  # 헬스체크 재시도 횟수 120회
+    networks:
+      - elastic-network
 
   es01:  # Elasticsearch 인스턴스 정의
     container_name: elasticsearch
@@ -117,6 +119,8 @@ services:  # 서비스 정의
       interval: 10s  # 헬스체크 간격 10초
       timeout: 10s  # 헬스체크 타임아웃 10초
       retries: 120  # 헬스체크 재시도 횟수 120회
+    networks:
+      - elastic-network
 
   kibana:  # Kibana 인스턴스 정의
     container_name: kibana
@@ -151,6 +155,8 @@ services:  # 서비스 정의
       interval: 10s  # 헬스체크 간격 10초
       timeout: 10s  # 헬스체크 타임아웃 10초
       retries: 120  # 헬스체크 재시도 횟수 120회
+    networks:
+      - elastic-network
 
   metricbeat01:  # Metricbeat 인스턴스 정의
     container_name: metricbeat
@@ -177,6 +183,8 @@ services:  # 서비스 정의
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
     command:  # Metricbeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
+    networks:
+      - elastic-network
 
   filebeat01:  # Filebeat 인스턴스 정의
     container_name: filebeat
@@ -200,7 +208,8 @@ services:  # 서비스 정의
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
     command:  # Filebeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
-
+    networks:
+      - elastic-network
 
 #  bash -c '
 #  if [ x${ELASTIC_PASSWORD} == x ]; then  # ELASTIC_PASSWORD 환경 변수가 설정되지 않았는지 확인
