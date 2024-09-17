@@ -23,7 +23,7 @@ func RotateLogger(logger *lumberjack.Logger, folderName string, fileName string)
 			if folderName != "" {
 				baseDirectory = filepath.Join(baseDirectory, folderName)
 			}
-			newLogFile := filepath.Join(baseDirectory, fmt.Sprintf("%s-%s.log", fileName, GetSeoulTime().Format("2006-01-02")))
+			newLogFile := filepath.Join(baseDirectory, fmt.Sprintf("%s-%s.log", fileName, GetSeoulTimeYesterday().Format("2006-01-02")))
 
 			logger.Filename = newLogFile
 
