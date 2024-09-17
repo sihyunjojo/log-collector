@@ -72,6 +72,7 @@ services:  # 서비스 정의
       retries: 120  # 헬스체크 재시도 횟수 120회
 
   es01:  # Elasticsearch 인스턴스 정의
+    container_name: elasticsearch
     depends_on:  # setup 서비스에 의존
       setup:
         condition: service_healthy  # setup 서비스가 헬스체크를 통과한 경우에만 시작
@@ -91,7 +92,7 @@ services:  # 서비스 정의
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 기본 사용자 비밀번호 설정
       - bootstrap.memory_lock=true  # 메모리 잠금 설정 (메모리 스와핑 방지)
       - xpack.security.enabled=true  # 보안 기능 활성화 (주석 처리)
-      - xpack.security.http.ssl.enabled=true  # HTTP SSL 활성화 (주석 처리)
+      - xpack.security.http.ssl.enabled=false  # HTTP SSL 활성화 (주석 처리)
       - xpack.security.http.ssl.key=certs/es01/es01.key  # SSL 키 파일 설정 (주석 처리)
       - xpack.security.http.ssl.certificate=certs/es01/es01.crt  # SSL 인증서 설정 (주석 처리)
       - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt  # CA 인증서 설정 (주석 처리)
@@ -101,6 +102,7 @@ services:  # 서비스 정의
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt  # 트랜스포트 CA 인증서 설정 (주석 처리)
       - xpack.security.transport.ssl.verification_mode=certificate  # 인증서 검증 모드 설정 (주석 처리)
       - xpack.license.self_generated.type=${LICENSE}  # 라이선스 타입 설정 (주석 처리)
+      - network.host=0.0.0.0
     mem_limit: ${ES_MEM_LIMIT}  # 메모리 제한 설정
     ulimits:  # 리소스 제한 설정
       memlock:
@@ -117,6 +119,7 @@ services:  # 서비스 정의
       retries: 120  # 헬스체크 재시도 횟수 120회
 
   kibana:  # Kibana 인스턴스 정의
+    container_name: kibana
     depends_on:  # es01 서비스에 의존
       es01:
         condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
@@ -150,6 +153,7 @@ services:  # 서비스 정의
       retries: 120  # 헬스체크 재시도 횟수 120회
 
   metricbeat01:  # Metricbeat 인스턴스 정의
+    container_name: metricbeat
     depends_on:  # es01 및 kibana 서비스에 의존
       es01:
         condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
@@ -175,6 +179,7 @@ services:  # 서비스 정의
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
 
   filebeat01:  # Filebeat 인스턴스 정의
+    container_name: filebeat
     depends_on:  # es01 서비스에 의존
       es01:
         condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
