@@ -39,7 +39,7 @@ func SetupLogger(folderName string, fileName string) *lumberjack.Logger {
 
 	// 로그 설정 반환
 	return &lumberjack.Logger{
-		Filename:   logDirectory + "/" + logFileName,
+		Filename:   logDirectory + "/" + logFileName + ".log",
 		MaxSize:    logMaxSize,
 		MaxBackups: logMaxBackups,
 		MaxAge:     logMaxAge,
@@ -47,7 +47,7 @@ func SetupLogger(folderName string, fileName string) *lumberjack.Logger {
 	}
 }
 
-// GetLogger는 writer에서 설정한 로그 작성자 (Fiber의 로거)를 반환함
+// GetLogger 는 writer 에서 설정한 로그 작성자 (Fiber의 로거)를 반환함
 func GetLogger() logger.Config {
 	userLogger := SetupLogger("status", "status")
 	seoulLocation, _ := time.LoadLocation("Asia/Seoul")
