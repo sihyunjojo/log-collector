@@ -106,8 +106,6 @@ services:  # 서비스 정의
       - xpack.license.self_generated.type=${LICENSE}  # 라이선스 타입 설정 (주석 처리)
  # 아래 부터 내가 임의로 넣은 설정
       - network.host=0.0.0.0
-      # JVM 메모리 설정 추가 2GB로
-      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
     mem_limit: ${ES_MEM_LIMIT}  # 메모리 제한 설정
     ulimits:  # 리소스 제한 설정
       memlock:
