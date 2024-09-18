@@ -3,7 +3,7 @@ volumes:  # 서비스들이 사용하는 데이터 저장소 설정
     driver: local  # 로컬 드라이버 사용
   esdata01:  # Elasticsearch 데이터 저장용 볼륨
     driver: local  # 로컬 드라이버 사용
-  kibanadata01:  # Kibana 데이터 저장용 볼륨
+  kibanadata:  # Kibana 데이터 저장용 볼륨
     driver: local  # 로컬 드라이버 사용
   metricbeatdata01:  # Metricbeat 데이터 저장용 볼륨
     driver: local  # 로컬 드라이버 사용
@@ -132,7 +132,7 @@ services:  # 서비스 정의
       co.elastic.logs/module: kibana  # 로그 모듈 설정 (Elastic 모니터링을 위해)
     volumes:  # 볼륨 마운트
       - certs:/usr/share/kibana/config/certs  # 인증서 볼륨 마운트
-      - kibanadata01:/usr/share/kibana/data  # 데이터 볼륨 마운트
+      - kibanadata:/usr/share/kibana/data  # 데이터 볼륨 마운트
     ports:
       - ${KIBANA_PORT}:5601  # 호스트와의 포트 매핑
     environment:  # 환경 변수 설정
