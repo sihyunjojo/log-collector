@@ -4,10 +4,15 @@ filebeat.inputs:
     enabled: true  # 이 입력을 활성화
     paths:
       - /usr/share/filebeat/logs/keywordByMember/*.log
-    parsers:
-      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
-          target: ""  # JSON 필드를 최상위에 배치
-          add_error_key: true  # 오류 발생 시 error 필드를 추가
+    parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
+      - multiline:  # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
+          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
+          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
+          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
+      - dissect:  # 로그 메시지를 특정 패턴에 맞춰 분해하여 필드로 나누는 설정입니다.
+          tokenizer: '%{timestamp} [%{+timestamp}] MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
+          field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
+          target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
     fields:
       log_type: keywordByMember  # 로그 타입 필드 추가
     fields_under_root: true  # 추가된 필드를 최상위에 배치
@@ -18,9 +23,14 @@ filebeat.inputs:
     paths:
       - /usr/share/filebeat/logs/keyword/*.log
     parsers:
-      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
-          target: ""  # JSON 필드를 최상위에 배치
-          add_error_key: true  # 오류 발생 시 error 필드를 추가
+      - multiline:
+          pattern: '^\d{4}/\d{2}/\d{2}'
+          negate: true
+          match: after
+      - dissect:
+          tokenizer: '%{timestamp} [%{+timestamp}] Received keyword: %{keyword}'
+          field: "message"
+          target_prefix: ""
     fields:
       log_type: keyword  # 로그 타입 필드 추가
     fields_under_root: true
@@ -32,9 +42,14 @@ filebeat.inputs:
     paths:
       - /usr/share/filebeat/logs/status/*.log
     parsers:
-      - ndjson: # Newline Delimited JSON 형식으로 로그를 파싱
-          target: ""  # JSON 필드를 최상위에 배치
-          add_error_key: true  # 오류 발생 시 error 필드를 추가
+      - multiline:
+          pattern: '^\['
+          negate: true
+          match: after
+      - dissect:
+          tokenizer: '[%{timestamp}] %{status} - %{method} %{path} %{duration} - %{ip}'
+          field: "message"
+          target_prefix: ""
     fields:
       log_type: status  # 로그 타입 필드 추가
     fields_under_root: true
@@ -58,21 +73,25 @@ filebeat.autodiscover:
 
 # 로그 메시지가 분석되어 각 필드에 저장되므로 Elasticsearch에서 데이터를 더 세밀하게 분석할 수 있게 됩니다.
 # 예를 들어: timestamp나 keyword 필드에 대한 쿼리를 Elasticsearch에서 쉽게 수행할 수 있게 됩니다.
-processors:
-  - timestamp: # 타임스탬프 필드를 처리하는 프로세서
-      field: event.created  # 'event.created' 필드를 타임스탬프 필드로 사용
-      layouts: # 타임스탬프 형식을 지정
-        - '2006/01/02 15:04:05'  # 타임스탬프 형식을 지정 (Go 타임 형식)
-      test: # 테스트용 데이터 지정 (타임스탬프 형식이 맞는지 확인)
-        - '2024/09/17 20:33:46'  # 테스트할 타임스탬프 값
 
 # %{timestamp}: 로그의 타임스탬프가 이 위치에 들어가며, 기본 필드로 추출됩니다.
 # %{@timestamp}: 타임스탬프 데이터가 중첩되어 로그로 들어오면 여기서 추출됩니다.
 # %{keyword}: Received keyword: 뒤에 나오는 데이터가 keyword 필드로 추출됩니다.
-  - dissect:  # 메시지를 구문 분석하는 프로세서
-      tokenizer: '%{timestamp} [%{@timestamp}] Received keyword: %{keyword}'  # 메시지를 구문 분석하기 위한 토큰 형식
-      field: 'message'  # 'message' 필드에서 데이터를 추출
-      target_prefix: ''  # 추출된 필드를 최상위에 배치 (별도 접두사 없이)
+
+# 수집된 로그를 더 잘 이해할 수 있게 하기 위해 필드를 변환하거나, 데이터를 필터링하거나, 추가적인 정보를 더하는 작업
+processors:
+  - timestamp:  # 타임스탬프 필드에 대해 처리하는 프로세서입니다.
+      field: "timestamp"  # "timestamp" 필드를 기준으로 타임스탬프를 처리합니다.
+      layouts:  # 타임스탬프의 형식을 정의합니다.
+        - "2006-01-02 15:04:05"  # 로그 타임스탬프 형식을 지정합니다.
+      test:  # 테스트용 타임스탬프 예시를 제공합니다.
+        - "2024-09-18 11:41:52"
+  - convert:  # 필드 값 변환을 위한 프로세서입니다.
+      fields:  # 변환할 필드 목록입니다.
+        - {from: "status", to: "http.response.status_code", type: "integer"}  # "status" 필드를 HTTP 응답 상태 코드로 변환합니다.
+        - {from: "duration", to: "event.duration", type: "duration"}  # "duration" 필드를 이벤트 지속 시간으로 변환합니다.
+      ignore_missing: true  # 필드가 없을 경우 무시합니다.
+      fail_on_error: false  # 오류가 발생해도 중단하지 않습니다.
 
   - add_docker_metadata: ~  # Docker 관련 메타데이터를 수집 이벤트에 자동으로 추가합니다.
   - add_host_metadata: ~  # 호스트 시스템에 대한 메타데이터를 추가합니다.
