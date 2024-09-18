@@ -1,23 +1,5 @@
 filebeat.inputs:
   - type: filestream
-    id: keywordByMember-logs
-    enabled: true  # 이 입력을 활성화
-    paths:
-      - /usr/share/filebeat/logs/keywordByMember/*.log
-    parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
-      - multiline:  # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
-          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
-          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
-          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
-      - dissect:  # 로그 메시지를 특정 패턴에 맞춰 분해하여 필드로 나누는 설정입니다.
-          tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
-          field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
-          target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
-    fields:
-      log_type: keywordByMember  # 로그 타입 필드 추가
-    fields_under_root: true  # 추가된 필드를 최상위에 배치
-
-  - type: filestream
     id: keyword-logs
     enabled: true  # 이 입력을 활성화
     paths:
@@ -54,6 +36,23 @@ filebeat.inputs:
       log_type: status  # 로그 타입 필드 추가
     fields_under_root: true
 
+  - type: filestream
+    id: keywordByMember-logs
+    enabled: true  # 이 입력을 활성화
+    paths:
+      - /usr/share/filebeat/logs/keywordByMember/*.log
+    parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
+      - multiline:  # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
+          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
+          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
+          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
+      - dissect:  # 로그 메시지를 특정 패턴에 맞춰 분해하여 필드로 나누는 설정입니다.
+          tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
+          field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
+          target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
+    fields:
+      log_type: keywordByMember  # 로그 타입 필드 추가
+    fields_under_root: true  # 추가된 필드를 최상위에 배치
 
 # 도커 로그 수집을 위해  - /var/run/docker.sock:/var/run/docker.sock 볼륨 설정이 필수.
 filebeat.autodiscover:
@@ -129,17 +128,14 @@ logging.files:
 # 이 기본 정책은 일반적으로 다음과 같은 단계를 포함합니다:
 #Hot 단계: 새 데이터가 쓰이는 단계
 #Delete 단계: 설정된 기간 후 데이터를 삭제하는 단계
-setup.ilm.enabled: true
-setup.ilm.rollover_alias: "filebeat"
-setup.ilm.pattern: "{now/d}-000001"
+#setup.ilm.enabled: false
+#setup.ilm.rollover_alias: "filebeat"
+#setup.ilm.pattern: "{now/d}-000001"
 
 # 아래 로그
 http.enabled: true
 http.host: localhost
 http.port: 5066
-
-output.console:
-  enabled: true
 
 #queue.type: persisted
 #queue.mem.events: 4096
