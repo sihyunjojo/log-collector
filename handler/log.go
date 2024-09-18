@@ -36,10 +36,10 @@ func HandleKeywordLog(c *fiber.Ctx) error {
 	}
 
 	// 로그 파일에 keyword 저장
-	userLogger := config.SetupLogger("keyword", "keyword")                        // 로그 파일을 생성하고 설정
-	config.RotateLogger(userLogger, "keyword", "keyword")                         // 자정마다 로그 파일을 롤링
-	log.SetOutput(userLogger)                                                     // 기본 log 패키지에서 로그 출력 대상을 변경
-	log.Printf("[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword) //  로그 메시지를 생성하고 기록
+	userLogger := config.SetupLogger("keyword", "keyword") // 로그 파일을 생성하고 설정
+	config.RotateLogger(userLogger, "keyword", "keyword")  // 자정마다 로그 파일을 롤링
+	log.SetOutput(userLogger)                              // 기본 log 패키지에서 로그 출력 대상을 변경
+	log.Printf("Received keyword: %s\n", req.Keyword)      //  로그 메시지를 생성하고 기록
 
 	//fmt.Fprintf(logger, "[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword)
 
@@ -76,7 +76,7 @@ func HandleKeywordLogByMember(c *fiber.Ctx) error {
 	userLogger := config.SetupLogger("keywordByMember", "keywordByMember")
 	config.RotateLogger(userLogger, "keywordByMember", "keywordByMember") // 자정마다 로그 파일 롤링
 	log.SetOutput(userLogger)
-	log.Printf("[%s] MemberId: %s, Received keyword: %s\n", config.GetSeoulTime(), memberId, req.Keyword)
+	log.Printf("MemberId: %s, Received keyword: %s\n", memberId, req.Keyword)
 
 	//fmt.Fprintf(logger, "[%s] Received keyword: %s\n", config.GetSeoulTime(), req.Keyword)
 
