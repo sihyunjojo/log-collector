@@ -10,7 +10,7 @@ filebeat.inputs:
           negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
           match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
       - dissect:  # 로그 메시지를 특정 패턴에 맞춰 분해하여 필드로 나누는 설정입니다.
-          tokenizer: '%{timestamp} [%{+timestamp}] MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
+          tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
           field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
           target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
     fields:
@@ -28,7 +28,7 @@ filebeat.inputs:
           negate: true
           match: after
       - dissect:
-          tokenizer: '%{timestamp} [%{+timestamp}] Received keyword: %{keyword}'
+          tokenizer: '%{timestamp} Received keyword: %{keyword}'
           field: "message"
           target_prefix: ""
     fields:
@@ -89,7 +89,7 @@ processors:
   - convert:  # 필드 값 변환을 위한 프로세서입니다.
       fields:  # 변환할 필드 목록입니다.
         - {from: "status", to: "http.response.status_code", type: "integer"}  # "status" 필드를 HTTP 응답 상태 코드로 변환합니다.
-        - {from: "duration", to: "event.duration", type: "duration"}  # "duration" 필드를 이벤트 지속 시간으로 변환합니다.
+        - {from: "duration", to: "event.duration", type: "long"}  # 'duration'을 'long' 타입으로 변환
       ignore_missing: true  # 필드가 없을 경우 무시합니다.
       fail_on_error: false  # 오류가 발생해도 중단하지 않습니다.
 
@@ -132,6 +132,14 @@ logging.files:
 setup.ilm.enabled: true
 setup.ilm.rollover_alias: "filebeat"
 setup.ilm.pattern: "{now/d}-000001"
+
+# 아래 로그
+http.enabled: true
+http.host: localhost
+http.port: 5066
+
+output.console:
+  enabled: true
 
 #queue.type: persisted
 #queue.mem.events: 4096
