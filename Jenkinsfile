@@ -58,6 +58,8 @@ pipeline {
                         --name log-collector \
                         -p 8089:8089 \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}'
+// docker run -d -v /tmp/logs/log-collector:/logs -v /var/lib/docker/containers:/var/lib/docker/containers:ro -v /var/run/docker.sock:/var/run/docker.sock:ro -v /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro -v /proc:/hostfs/proc:ro -v /:/hostfs:ro -e TZ=Asia/Seoul --name log-collector -p 8089:8089 log-collector-app:latest
+
 //  도커 컨테이너, 도커 데몬, 호스트 시스템의 리소스 및 상태 정보에 접근할 수 있게 구성되어 있습니다.
 // 주로 모니터링, 로그 수집, 또는 시스템 상태를 분석하는 애플리케이션에서 이러한 설정을 사용합니다.
 
