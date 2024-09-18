@@ -82,6 +82,7 @@ services:  # 서비스 정의
     volumes:  # 볼륨 마운트
       - certs:/usr/share/elasticsearch/config/certs  # 인증서 볼륨을 마운트
       - esdata01:/usr/share/elasticsearch/data  # 데이터 볼륨을 마운트
+      - ./log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties  # 로그 설정 파일 추가
     ports:
       - ${ES_PORT}:9200  # 호스트와의 포트 매핑
     environment:  # 환경 변수 설정
