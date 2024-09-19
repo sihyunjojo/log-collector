@@ -5,10 +5,6 @@ filebeat.inputs:
     paths:
       - /usr/share/filebeat/logs/keyword/*.log
     parsers:
-      - multiline:
-          pattern: '^\d{4}/\d{2}/\d{2}'
-          negate: true
-          match: after
       - dissect:
           tokenizer: '%{timestamp} Received keyword: %{keyword}'
           field: "message"
@@ -112,12 +108,22 @@ output.elasticsearch:
   # ssl 설정 시에만 하는거 같음 (보안상 매우 권장)
   ssl.enabled: true # 이 설정은 SSL을 사용하여 서버와의 통신을 암호화하겠다는 의미입니다. true로 설정하면, Filebeat는 SSL을 통한 보안 연결을 시도합니다.
   ssl.certificate_authorities: "certs/ca/ca.crt" # 이 경로는 Filebeat가 서버의 SSL 인증서를 신뢰하기 위해 참조하는 인증 기관(CA) 인증서의 위치를 지정합니다. 서버의 인증서가 이 CA에 의해 서명된 경우에만 연결이 허용됩니다.
-  index: "logs-%{[log_type]}-%{+yyyy.MM.dd}"  # 로그 타입 및 날짜 기반으로 인덱스 생성
+  ssl.verification_mode: none
+  indices:
+      - index: "keyword-logs-%{+yyyy.MM.dd}"
+        when.equals:
+          log_type: "keyword"
+      - index: "status-logs-%{+yyyy.MM.dd}"
+        when.equals:
+          log_type: "status"
+      - index: "keywordByMember-logs-%{+yyyy.MM.dd}"
+        when.equals:
+          log_type: "keywordByMember"
 
 setup.template.name: "logs"
 setup.template.pattern: "logs-*"
 
-logging.level: info
+logging.level: debug
 logging.to_files: true
 logging.files:
   path: /var/log/filebeat
