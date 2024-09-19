@@ -166,10 +166,22 @@ services:  # 서비스 정의
       - certs:/usr/share/metricbeat/certs  # 인증서 볼륨 마운트
       - metricbeatdata01:/usr/share/metricbeat/data  # 데이터 볼륨 마운트
       - "./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro"  # 로컬의 metricbeat.yml 파일을 읽기 전용으로 마운트
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"  # Docker 소켓 파일을 읽기 전용으로 마운트
-      - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"  # cgroup 파일 시스템을 읽기 전용으로 마운트
-      - "/proc:/hostfs/proc:ro"  # proc 파일 시스템을 읽기 전용으로 마운트
-      - "/:/hostfs:ro"  # 루트 파일 시스템을 읽기 전용으로 마운트
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /hostfs/sys/fs/cgroup
+        read_only: true
+      - type: bind
+        source: /proc
+        target: /hostfs/proc
+        read_only: true
+      - type: bind
+        source: /
+        target: /hostfs
+        read_only: true
     environment:  # 환경 변수 설정
       - TZ=Asia/Seoul  # 시간대 설정
       - ELASTIC_USER=elastic  # Elasticsearch 사용자 이름 설정
@@ -178,21 +190,30 @@ services:  # 서비스 정의
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
     command:  # Metricbeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
+    security_opt:
+      - label:disable
 
-  filebeat01:  # Filebeat 인스턴스 정의
+
+  filebeat01:
     container_name: filebeat
-    depends_on:  # es01 서비스에 의존
+    depends_on:
       es01:
-        condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
-    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}  # Filebeat 이미지 사용
-    user: root  # root 사용자로 실행
-    volumes:  # 볼륨 마운트
-      - certs:/usr/share/filebeat/certs  # 인증서 볼륨 마운트
-      - filebeatdata01:/usr/share/filebeat/data  # 데이터 볼륨 마운트
-      - "/tmp/logs/log-collector:/usr/share/filebeat/logs"  # 로컬의 데이터 디렉토리를 마운트
-      - "./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"  # 로컬의 filebeat.yml 파일을 읽기 전용으로 마운트
-      - "/var/lib/docker/containers:/var/lib/docker/containers:ro"  # Docker 컨테이너 로그를 읽기 전용으로 마운트
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"  # Docker 소켓 파일을 읽기 전용으로 마운트
+        condition: service_healthy
+    image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
+    user: root
+    volumes:
+      - certs:/usr/share/filebeat/certs
+      - filebeatdata01:/usr/share/filebeat/data
+      - "/tmp/logs/log-collector:/usr/share/filebeat/logs"
+      - "./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - type: bind
+        source: /var/lib/docker/containers
+        target: /var/lib/docker/containers
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
     environment:  # 환경 변수 설정
       - TZ=Asia/Seoul  # 시간대 설정
       - ELASTIC_USER=elastic  # Elasticsearch 사용자 이름 설정
@@ -201,6 +222,8 @@ services:  # 서비스 정의
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
     command:  # Filebeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
+    security_opt:
+      - label:disable
 
 
 #  bash -c '
