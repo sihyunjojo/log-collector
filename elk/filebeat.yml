@@ -6,9 +6,9 @@ filebeat.inputs:
       - /usr/share/filebeat/logs/keyword/*.log
     parsers:
       - dissect:
-          tokenizer: '%{timestamp} Received keyword: %{keyword}'
-          field: "message"
-          target_prefix: ""
+        tokenizer: '%{timestamp} Received keyword: %{keyword}'
+        field: "message"
+        target_prefix: ""
     fields:
       log_type: keyword  # 로그 타입 필드 추가
     fields_under_root: true
@@ -16,18 +16,17 @@ filebeat.inputs:
   - type: filestream
     id: status-logs
     enabled: true  # 이 입력을 활성화
-
     paths:
       - /usr/share/filebeat/logs/status/*.log
     parsers:
       - multiline:
-          pattern: '^\['
-          negate: true
-          match: after
+        pattern: '^\['
+        negate: true
+        match: after
       - dissect:
-          tokenizer: '[%{timestamp}] %{status} - %{method} %{path} %{duration} - %{ip}'
-          field: "message"
-          target_prefix: ""
+        tokenizer: '[%{timestamp}] %{status} - %{method} %{path} %{duration} - %{ip}'
+        field: "message"
+        target_prefix: ""
     fields:
       log_type: status  # 로그 타입 필드 추가
     fields_under_root: true
@@ -39,13 +38,13 @@ filebeat.inputs:
       - /usr/share/filebeat/logs/keywordByMember/*.log
     parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
       - multiline:  # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
-          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
-          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
-          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
+        pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
+        negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
+        match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
       - dissect:  # 로그 메시지를 특정 패턴에 맞춰 분해하여 필드로 나누는 설정입니다.
-          tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
-          field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
-          target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
+        tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'  # 로그 메시지 형식에 맞춘 토크나이저입니다.
+        field: "message"  # 메시지 필드를 분석 대상으로 지정합니다.
+        target_prefix: ""  # 필드의 값을 그대로 상위에 두도록 설정합니다
     fields:
       log_type: keywordByMember  # 로그 타입 필드 추가
     fields_under_root: true  # 추가된 필드를 최상위에 배치
@@ -57,8 +56,8 @@ filebeat.autodiscover:
       hints.enabled: true  # Docker 컨테이너에서 자동으로 로그 수집을 활성화하기 위해 힌트 기반 발견을 사용합니다.
       templates:
         - condition:
-            equals:
-              docker.container.labels.co.elastic.logs/enabled: "true"
+          equals:
+            docker.container.labels.co.elastic.logs/enabled: "true"
 # 위 설정 후,
 #     labels:
 #      co.elastic.logs/enabled: "true"  # 이 컨테이너의 로그 수집 활성화
@@ -110,15 +109,15 @@ output.elasticsearch:
   ssl.certificate_authorities: "certs/ca/ca.crt" # 이 경로는 Filebeat가 서버의 SSL 인증서를 신뢰하기 위해 참조하는 인증 기관(CA) 인증서의 위치를 지정합니다. 서버의 인증서가 이 CA에 의해 서명된 경우에만 연결이 허용됩니다.
   ssl.verification_mode: none
   indices:
-      - index: "keyword-logs-%{+yyyy.MM.dd}"
-        when.equals:
-          log_type: "keyword"
-      - index: "status-logs-%{+yyyy.MM.dd}"
-        when.equals:
-          log_type: "status"
-      - index: "keywordByMember-logs-%{+yyyy.MM.dd}"
-        when.equals:
-          log_type: "keywordByMember"
+    - index: "keyword-logs-%{+yyyy.MM.dd}"
+      when.equals:
+        log_type: "keyword"
+    - index: "status-logs-%{+yyyy.MM.dd}"
+      when.equals:
+        log_type: "status"
+    - index: "keywordByMember-logs-%{+yyyy.MM.dd}"
+      when.equals:
+        log_type: "keywordByMember"
 
 setup.template.name: "logs"
 setup.template.pattern: "logs-*"
