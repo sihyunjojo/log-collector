@@ -201,6 +201,8 @@ services:  # 서비스 정의
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${STACK_VERSION}
     user: root
+    ports:
+      - "5066:5066"  # Filebeat HTTP 모니터링 포트를 호스트와 매핑
     volumes:
       - certs:/usr/share/filebeat/certs
       - filebeatdata01:/usr/share/filebeat/data
