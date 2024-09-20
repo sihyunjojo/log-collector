@@ -67,6 +67,9 @@ filebeat.autodiscover:
 # %{keyword}: Received keyword: 뒤에 나오는 데이터가 keyword 필드로 추출됩니다.
 
 # 수집된 로그를 더 잘 이해할 수 있게 하기 위해 필드를 변환하거나, 데이터를 필터링하거나, 추가적인 정보를 더하는 작업
+# 예를 들어 log_type이 "keyword"인 경우:
+#2024/09/21 10:15:30 Received keyword: "apple"
+#이 로그에서 timestamp와 keyword 필드가 추출되어 Elasticsearch로 전송됩니다.
 processors:
   - dissect:
       if: 'ctx.log_type == "keyword"'
@@ -93,6 +96,8 @@ processors:
         - "2006-01-02 15:04:05"  # 로그 타임스탬프 형식을 지정합니다.
       test:  # 테스트용 타임스탬프 예시를 제공합니다.
         - "2024-09-18 11:41:52"
+      timezone: "Asia/Seoul"  # 원하는 시간대
+
   - convert:  # 필드 값 변환을 위한 프로세서입니다.
       fields:  # 변환할 필드 목록입니다.
         - {from: "status", to: "http.response.status_code", type: "integer"}  # "status" 필드를 HTTP 응답 상태 코드로 변환합니다.
@@ -131,6 +136,9 @@ output.elasticsearch:
     - index: "keywordByMember-logs-%{+yyyy.MM.dd}"
       when.equals:
         log_type: "keywordByMember"
+# Filebeat에서 바로 completion 타입을 할당할 수는 없고, Elasticsearch의 인덱스 템플릿을 사용하여 특정 필드에 대해 completion 타입을 설정해야 합니다.
+# 기본적으로는 text이라는 타입이 할당
+# "type": "text"
 
 setup.template:
   # 하나의 템플릿으로 여러 패턴에 적용
