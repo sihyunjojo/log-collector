@@ -145,7 +145,7 @@ logging.files:
 
 # 아래 로그
 http.enabled: true
-http.host: localhost
+http.host: 0.0.0.0
 http.port: 5066
 
 #queue.type: persisted
