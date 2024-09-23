@@ -15,6 +15,20 @@ filebeat.inputs:
     fields_under_root: true
 
   - type: filestream
+    id: keywordByMember-logs
+    enabled: true  # 이 입력을 활성화
+    paths:
+      - /usr/share/filebeat/logs/keywordByMember/*.log
+    parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
+      - multiline: # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
+          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
+          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
+          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
+    fields:
+      log_type: keywordByMember  # 로그 타입 필드 추가
+    fields_under_root: true  # 추가된 필드를 최상위에 배치
+
+  - type: filestream
     id: status-logs
     enabled: true  # 이 입력을 활성화
     paths:
@@ -28,20 +42,6 @@ filebeat.inputs:
     fields:
       log_type: status  # 로그 타입 필드 추가
     fields_under_root: true
-
-  - type: filestream
-    id: keywordByMember-logs
-    enabled: true  # 이 입력을 활성화
-    paths:
-      - /usr/share/filebeat/logs/keywordByMember/*.log
-    parsers:  # 로그 파일을 분석하기 위한 파서 설정입니다.
-      - multiline: # 여러 줄로 이어지는 로그를 하나의 이벤트로 처리하는 설정입니다.
-          pattern: '^\d{4}/\d{2}/\d{2}'  # 날짜 패턴이 나타나는 줄을 기준으로 합니다.
-          negate: true  # 패턴과 일치하지 않는 줄을 계속해서 붙입니다.
-          match: after  # 패턴과 일치하는 줄 이후에 오는 줄을 함께 묶습니다.
-    fields:
-      log_type: keywordByMember  # 로그 타입 필드 추가
-    fields_under_root: true  # 추가된 필드를 최상위에 배치
 
 # 도커 로그 수집을 위해  - /var/run/docker.sock:/var/run/docker.sock 볼륨 설정이 필수.
 filebeat.autodiscover:
@@ -78,16 +78,18 @@ processors:
       target_prefix: ""
 
   - dissect:
-      if: 'ctx.log_type == "status"'
-      tokenizer: '[%{timestamp}] %{status} - %{method} %{path} %{duration} - %{ip}'
-      field: "message"
-      target_prefix: ""
-
-  - dissect:
       if: 'ctx.log_type == "keywordByMember"'
       tokenizer: '%{timestamp} MemberId: %{memberId}, Received keyword: %{keyword}'
       field: "message"
       target_prefix: ""
+
+  - dissect:
+      if: 'ctx.log_type == "status"'
+      tokenizer: '[%{timestamp}] %{status} - %{method} %{path} %{duration;trim} - %{ip}'
+      field: "message"
+      target_prefix: ""
+
+
 
 
   - timestamp:  # 타임스탬프 필드에 대해 처리하는 프로세서입니다.
