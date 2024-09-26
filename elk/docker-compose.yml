@@ -254,6 +254,7 @@ services:  # 서비스 정의
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - LOG_LEVEL=debug
+    mem_limit: ${LS_MEM_LIMIT}
 
 
 
