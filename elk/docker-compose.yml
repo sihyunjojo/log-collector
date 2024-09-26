@@ -78,7 +78,12 @@ services:  # 서비스 정의
     depends_on:  # setup 서비스에 의존
       setup:
         condition: service_healthy  # setup 서비스가 헬스체크를 통과한 경우에만 시작
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}  # Elasticsearch 이미지 사용
+#    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}  # Elasticsearch 이미지 사용
+    build:
+      context: .
+      dockerfile: Dockerfile_ES
+      args:
+        STACK_VERSION: ${STACK_VERSION}  # .env 파일에서 STACK_VERSION을 Dockerfile로 전달
     labels:
       co.elastic.logs/module: elasticsearch  # 로그 모듈 설정 (Elastic 모니터링을 위해)
     volumes:  # 볼륨 마운트
