@@ -9,6 +9,8 @@ volumes:  # 서비스들이 사용하는 데이터 저장소 설정
     driver: local  # 로컬 드라이버 사용
   filebeatdata01:  # Filebeat 데이터 저장용 볼륨
     driver: local  # 로컬 드라이버 사용
+  logstashdata01: # logstash 데이터 저장용 볼륨
+    driver: local  # 로컬 드라이버 사용
 
 # networks 항목에 default를 정의하면, 도커 컴포즈는 기본적으로 모든 서비스 컨테이너를 이 네트워크에 자동으로 연결
 networks:  # 네트워크 설정
@@ -189,6 +191,7 @@ services:  # 서비스 정의
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
+      - LOGSTASH_HOSTS=http://logstash01:9600  # Logstash 호스트 주소 설정
     command:  # Metricbeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
     security_opt:
@@ -223,12 +226,33 @@ services:  # 서비스 정의
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
+      - LOGSTASH_HOSTS=http://logstash01:9600  # Logstash 호스트 주소 설정
     command:  # Filebeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
     security_opt:
       - label:disable
 
-
+  logstash01:  # Logstash 인스턴스 정의
+    container_name: logstash
+    depends_on:  # es01 및 kibana 서비스에 의존
+      es01:
+        condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
+      kibana:
+        condition: service_healthy  # kibana 서비스가 헬스체크를 통과한 경우에만 시작
+    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}  # Logstash 이미지 사용
+    labels:
+      co.elastic.logs/module: logstash  # 로그 모듈 설정 (Elastic 모니터링을 위해)
+    user: root  # root 사용자로 실행
+    volumes:  # 볼륨 마운트
+      - certs:/usr/share/logstash/certs  # 인증서 볼륨 마운트
+      - logstashdata01:/usr/share/logstash/data  # 데이터 볼륨 마운트
+      - "./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"  # 로컬의 logstash.conf 파일을 읽기 전용으로 마운트
+    mem_limit: ${LS_MEM_LIMIT}  # 메모리 제한 설정
+    environment:  # 환경 변수 설정
+      - xpack.monitoring.enabled=false  # X-Pack 모니터링 비활성화
+      - ELASTIC_USER=elastic  # Elasticsearch 사용자 이름 설정
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
+      - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
 #  bash -c '
 #  if [ x${ELASTIC_PASSWORD} == x ]; then  # ELASTIC_PASSWORD 환경 변수가 설정되지 않았는지 확인
 #  echo "Set the ELASTIC_PASSWORD environment variable in the .env file";  # 설정 요청 메시지 출력

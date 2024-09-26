@@ -15,6 +15,11 @@ metricbeat.modules:
     password: ${ELASTIC_PASSWORD}   # Elasticsearch에 인증할 때 사용할 비밀번호를 환경 변수에서 가져옵니다.
     ssl.enabled: true   # SSL 통신을 활성화하여 보안 연결을 사용합니다.
 
+  - module: logstash   # Logstash 모듈을 사용하여 Logstash 메트릭을 수집합니다.
+    xpack.enabled: true   # X-Pack이 활성화된 Logstash에서 추가적인 메트릭 수집을 가능하게 합니다.
+    period: 10s   # 메트릭 수집 주기를 10초로 설정합니다.
+    hosts: ${LOGSTASH_HOSTS}   # Logstash 호스트 주소를 환경 변수에서 가져옵니다.
+
   - module: kibana   # Kibana 모듈을 사용하여 Kibana 메트릭을 수집합니다.
     metricsets:
       - stats   # 수집할 메트릭 유형으로 stats(통계 정보)를 설정합니다.
