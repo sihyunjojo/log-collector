@@ -254,6 +254,7 @@ services:  # 서비스 정의
       - ./lib:/lib/jars
       - "./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"  # 로컬의 logstash.conf 파일을 읽기 전용으로 마운트
     environment:  # 환경 변수 설정
+      - TZ=Asia/Seoul  # 시간대 설정
       - xpack.monitoring.enabled=false  # X-Pack 모니터링 비활성화
       - ELASTIC_USER=elastic  # Elasticsearch 사용자 이름 설정
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
