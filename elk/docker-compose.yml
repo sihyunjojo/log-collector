@@ -260,6 +260,11 @@ services:  # 서비스 정의
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - LOG_LEVEL=debug
     mem_limit: ${LS_MEM_LIMIT}
+    command: /bin/sh -c  "mkdir -p /var/lib/logstash/metadata && \
+                          touch /var/lib/logstash/metadata/last_run_metadata_area.yml && \
+                          touch /var/lib/logstash/metadata/last_run_metadata_area_posts.yml && \
+                          touch /var/lib/logstash/metadata/last_run_metadata_franchises_posts.yml && \
+                          logstash -f /usr/share/logstash/pipeline/logstash.conf"
 
 
 
