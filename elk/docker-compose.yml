@@ -258,7 +258,7 @@ services:  # 서비스 정의
       - ELASTIC_USER=elastic  # Elasticsearch 사용자 이름 설정
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
-      - LOG_LEVEL=debug
+      - LOG_LEVEL=info
     mem_limit: ${LS_MEM_LIMIT}
     command: /bin/sh -c  "mkdir -p /var/lib/logstash/metadata && \
                           touch /var/lib/logstash/metadata/last_run_metadata_area.yml && \
