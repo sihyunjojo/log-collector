@@ -111,6 +111,7 @@ services:  # 서비스 정의
       - xpack.security.transport.ssl.verification_mode=certificate  # 인증서 검증 모드 설정 (주석 처리)
       - xpack.license.self_generated.type=${LICENSE}  # 라이선스 타입 설정 (주석 처리)
       - TZ=Asia/Seoul  # 시간대 설정 추가
+      - JAVA_OPTS="-Xms512m -Xmx2g"  # JVM 메모리 설정 추가
     mem_limit: ${ES_MEM_LIMIT}  # 메모리 제한 설정
     ulimits:  # 리소스 제한 설정
       memlock:
@@ -232,6 +233,7 @@ services:  # 서비스 정의
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - KIBANA_HOSTS=http://kibana:5601  # Kibana 호스트 주소 설정
       - LOGSTASH_HOSTS=http://logstash01:9600  # Logstash 호스트 주소 설정
+      - JAVA_OPTS="-Xms512m -Xmx2g"  # JVM 메모리 설정 추가
     command:  # Filebeat 실행 시 명령어
       - --strict.perms=false  # 권한 엄격성 설정 비활성화
     security_opt:
@@ -260,6 +262,7 @@ services:  # 서비스 정의
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}  # Elasticsearch 사용자 비밀번호 설정
       - ELASTIC_HOSTS=https://es01:9200  # Elasticsearch 호스트 주소 설정
       - LOG_LEVEL=info
+      - JAVA_OPTS="-Xms512m -Xmx2g"  # JVM 메모리 설정 추가
     mem_limit: ${LS_MEM_LIMIT}
     command: /bin/sh -c  "mkdir -p /var/lib/logstash/metadata && \
                           touch /var/lib/logstash/metadata/last_run_metadata_area.yml && \
