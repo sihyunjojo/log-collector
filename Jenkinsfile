@@ -13,7 +13,7 @@ pipeline {
                 git(
                     branch: 'main', // 브랜치 설정
                     url: 'https://github.com/TEAM-Joyride/logCollector.git', // 리포지토리 URL
-                    credentialsId: '404e752c-fb33-4398-969b-11253d1777d1' // (옵션) 인증이 필요한 경우 자격 증명 설정
+                    credentialsId: 'github-pat' // (옵션) 인증이 필요한 경우 자격 증명 설정
                 )
             }
         }
