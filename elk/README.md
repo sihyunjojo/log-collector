@@ -1,3 +1,8 @@
+# logstash jdbc 설치 
+```bash
+wget https://mariadb.com/downloads/connectors/connectors-data-access/java8-connector/mariadb-java-client-3.4.1.jar
+```
+
 # 포팅 방법
 
 먼저 현재 시스템에 설치된 Java 버전을 확인합니다:
