@@ -241,20 +241,22 @@ services:  # 서비스 정의
 
   logstash01:  # Logstash 인스턴스 정의
     container_name: logstash
+    build:
+      context: .
+      dockerfile: Dockerfile_LS  # MariaDB JDBC 드라이버 다운로드 및 Logstash 설정을 위한 Dockerfile
+      args:
+        STACK_VERSION: ${STACK_VERSION}  # .env 파일에서 STACK_VERSION을 Dockerfile로 전달
     depends_on:  # es01 및 kibana 서비스에 의존
       es01:
         condition: service_healthy  # es01 서비스가 헬스체크를 통과한 경우에만 시작
       kibana:
         condition: service_healthy  # kibana 서비스가 헬스체크를 통과한 경우에만 시작
-    image: docker.elastic.co/logstash/logstash:${STACK_VERSION}  # Logstash 이미지 사용
     labels:
       co.elastic.logs/module: logstash  # 로그 모듈 설정 (Elastic 모니터링을 위해)
     user: root  # root 사용자로 실행
     volumes:  # 볼륨 마운트
       - certs:/usr/share/logstash/certs  # 인증서 볼륨 마운트
       - logstashdata01:/usr/share/logstash/data  # 데이터 볼륨 마운트
-      - ./lib:/lib/jars
-      - "./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"  # 로컬의 logstash.conf 파일을 읽기 전용으로 마운트
     environment:  # 환경 변수 설정
       - TZ=Asia/Seoul  # 시간대 설정
       - xpack.monitoring.enabled=false  # X-Pack 모니터링 비활성화
@@ -265,10 +267,10 @@ services:  # 서비스 정의
       - JAVA_OPTS="-Xms512m -Xmx2g"  # JVM 메모리 설정 추가
     mem_limit: ${LS_MEM_LIMIT}
     command: /bin/sh -c  "mkdir -p /var/lib/logstash/metadata && \
-                          touch /var/lib/logstash/metadata/last_run_metadata_area.yml && \
-                          touch /var/lib/logstash/metadata/last_run_metadata_area_posts.yml && \
-                          touch /var/lib/logstash/metadata/last_run_metadata_franchises_posts.yml && \
-                          logstash -f /usr/share/logstash/pipeline/logstash.conf"
+      [ ! -f /var/lib/logstash/metadata/last_run_metadata_area.yml ] && touch /var/lib/logstash/metadata/last_run_metadata_area.yml && \
+      [ ! -f /var/lib/logstash/metadata/last_run_metadata_area_posts.yml ] && touch /var/lib/logstash/metadata/last_run_metadata_area_posts.yml && \
+      [ ! -f /var/lib/logstash/metadata/last_run_metadata_franchises_posts.yml ] && touch /var/lib/logstash/metadata/last_run_metadata_franchises_posts.yml && \
+      logstash -f /usr/share/logstash/pipeline/logstash.conf"
 
 
 
