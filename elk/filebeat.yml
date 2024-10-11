@@ -178,9 +178,9 @@ logging.files:
 #setup.ilm.pattern: "{now/d}-000001"
 
 # 아래 로그
-http.enabled: true
-http.host: 0.0.0.0
-http.port: 5066
+# http.enabled: true
+# http.host: 0.0.0.0
+# http.port: 5066
 
 #queue.type: persisted
 #queue.mem.events: 4096
