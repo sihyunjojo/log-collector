@@ -56,7 +56,7 @@ pipeline {
                         -v /:/hostfs:ro \
                         -e TZ=Asia/Seoul \
                         --name log-collector \
-                        -p 8089:8089 \
+                        -p 8085:8085 \
                         ${DOCKER_IMAGE}:${DOCKER_TAG}'
 // docker run -d -v /tmp/logs/log-collector:/logs -v /var/lib/docker/containers:/var/lib/docker/containers:ro -v /var/run/docker.sock:/var/run/docker.sock:ro -v /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro -v /proc:/hostfs/proc:ro -v /:/hostfs:ro -e TZ=Asia/Seoul --name log-collector -p 8089:8089 log-collector-app:latest
 
