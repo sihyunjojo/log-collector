@@ -62,7 +62,7 @@ COPY --from=builder /app/.env ./
 RUN ls -l /main # 파일이 존재하는지 확인
 
 # 11. 포트 설정
-EXPOSE 8085
+EXPOSE 8089
 
 # 12. 실행
 CMD ["/main"]
